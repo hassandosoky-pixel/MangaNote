@@ -1,4 +1,4 @@
-name: Build Android APK from ZIP
+name: Build Android APK
 
 on:
   push:
@@ -22,16 +22,15 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build APK (Auto-detect directory)
+    - name: Build APK using System Gradle
       run: |
-        
-        PROJECT_DIR=$(dirname $(find . -name "gradlew" | head -n 1))
-        echo "Found Android project in: $PROJECT_DIR"
+        # الكود ده بيدور على مسار المشروع الأساسي باستخدام ملف الإعدادات
+        PROJECT_DIR=$(dirname $(find . -name "settings.gradle*" | head -n 1))
+        echo "Found project root in: $PROJECT_DIR"
         cd "$PROJECT_DIR"
         
-        
-        chmod +x gradlew
-        ./gradlew assembleDebug
+        # استخدام الجرادل الخاص بالسيرفر لبناء التطبيق مباشرة
+        gradle assembleDebug
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
