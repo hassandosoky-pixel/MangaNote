@@ -24,12 +24,15 @@ jobs:
 
     - name: Build APK using System Gradle
       run: |
-        # الكود ده بيدور على مسار المشروع الأساسي باستخدام ملف الإعدادات
+        # تحديد مسار المشروع
         PROJECT_DIR=$(dirname $(find . -name "settings.gradle*" | head -n 1))
         echo "Found project root in: $PROJECT_DIR"
         cd "$PROJECT_DIR"
         
-        # استخدام الجرادل الخاص بالسيرفر لبناء التطبيق مباشرة
+        # إنشاء ملف الإمضاء الوهمي للسيرفر
+        keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
+        
+        # بناء التطبيق
         gradle assembleDebug
 
     - name: Upload APK Artifact
